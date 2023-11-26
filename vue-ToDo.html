@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+    <style>
+        .fade-enter-active,
+        .fade-leave-active
+        {
+            transition:opacity 0.5s;
+        }
+        .fade-enter-from,
+        .fade-leave-to
+        {
+            opacity:0;
+        }
+        .fade-enter-to,
+        .fade-leave-from
+        {
+            opacity:1;
+        }
+        .v-enter-active,
+        .v-leave-active{
+            transition:opacity 1s;
+        }
+        .v-enter-from,
+        .v-leave-to{
+            opacity:0;
+        }
+        .v-enter-to,
+        .v-leave-from{
+            opacity:1;
+        }
+        
+    </style>
+
+</head>
+<body>
+    <div id="D">
+        <transition name="fade">
+            <p v-if="show">今日事今日畢</p>
+        </transition>
+        <button v-on:click="show=!show">口號</button>
+    </div>
+    <div id="X">
+        <h1 v-if="seen" v-bind:title="Msg">報時</h1>
+        <h3>待做事項</h3>
+        <button v-on:click="show1=!show1">不做了</button>
+        <transition name="v">
+            <ol v-if="show1">
+                <li v-for="z in ToDo" >
+                    {{z.text}}
+                </li>
+            </ol>
+        </transition>
+        
+    </div>
+    <script>
+        var R=new Vue({
+            el:'#X',
+            data:{
+                show1:true,
+                ToDo:[
+                    {text:'吃晚餐'},
+                    {text:'寫作業'},
+                    {text:'打遊戲'}
+                ],
+                seen:true,
+                Msg:'現在時間'+new Date().toLocaleString()
+            }
+        });
+    </script>
+    <script>
+        new Vue({
+            el:'#D',
+            data:{
+                show:true
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <script>
+        let isPalindrome = function(x) {
+    
+            let numToString=x.toString();
+            const myarray=numToString.split("");
+            
+            if(myarray==myarray.reverse()){
+                return true;
+            }
+            else{
+                return false;
+            }
+        };
+        isPalindrome(121);
+    </script>
+    
+</body>
+</html>

@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
+</head>
+<body>
+
+    <div id="cart">
+        <button @click="doOne">索取特價優惠</button>
+        <input @change="doTwo" v-model="name" type="text" placeholder="輸入名字可打折">
+        <br/><br>
+        <button @click="doThree">查看打折</button>
+        <ul v-for="food in foods">
+            <li>
+        {{food.title}}{{food.price}}元*
+        <input v-model="food.amount" size="1">份<!--v-model即時雙向回傳值-->
+        ={{food.amount*food.price}}元
+        </li>
+        </ul>
+        <h1>共計{{total}}元</h1>
+
+        <h1>打折後{{total*0.95}}元</h1>
+    </div>
+    <script>
+        var data=[
+            {
+                title:'雞排',
+                price:55,
+                amount:1
+            },
+        
+            {
+                title:'薯條',
+                price:40,
+                amount:1
+            },
+            {
+                title:'可樂',
+                price:25,
+                amount:1
+            }
+        ];
+        var vm=new Vue({
+            el:cart,
+            data:{
+                name:''
+            },
+            methods:{
+                doThree(){
+                    alert("已經幫你打折!")
+                },
+                doTwo(){
+                    alert(this.name+"太難聽了沒打折");
+                },
+                doOne(){
+                    alert('優惠時間已過');
+                }
+            },
+            data:{
+                foods:data
+            },
+            computed:{//計算
+                total:function(){
+                    var sum=0;
+                    for(var i in this.foods){
+                        sum+=this.foods[i].price*this.foods[i].amount;
+                        
+                    }
+                    return sum;
+                }
+                
+                
+            }
+        });
+    </script>
+    
+</body>
+</html>

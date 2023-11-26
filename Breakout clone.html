@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        #topic{text-align:center;}/*#接id，物件名稱則不必接*/
+        canvas{background:#eee; display:block; margin:0 auto;}
+
+        
+    </style>
+    <script>
+        var Z=setInterval(draw,10);
+        function drawLives(){
+            ctx.font="16px Arial";
+            ctx.fillStyle="#0095DD";
+            ctx.fillText("lives "+lives,100,20);
+        }
+        function mouseMoveHandler(e){
+            var relativeX=e.clientX-canvas.offsetLeft;
+            if(relativeX>0 && relativeX<canvas.width){
+                paddleX=relativeX-paddlewidth/2;
+            }
+        }
+        function drawScore(){
+            ctx.font="16px Arial";
+            ctx.fillStyle="#0095DD";
+            ctx.fillText("score: "+score,8,20);
+        }
+        function collisionDetection(){
+            for(var c=0;c<brickColumnCount;c++){
+                for(var r=0;r<brickRowCount;r++){
+                    var b=brick[c][r];
+                    if(b.status==1){
+                        if(x>b.x && x<b.x+brickwidth && y>b.y && y<b.y+brickheight){
+                            dy=-dy;
+                            b.status=0;
+                            score++;
+                            if(score==brickColumnCount*brickRowCount){
+                                alert("you win");
+                                clearInterval(Z);
+                            }
+                        }
+                    }
+                }
+            }        
+        }
+        function drawBricks(){
+            ctx.beginPath();
+            for(var c=0;c<brickColumnCount;c++){
+                for(var r=0;r<brickRowCount;r++){
+
+                    if(brick[c][r].status==1){
+                        var brickX=c*(brickwidth+brickpadding)+brickoffsetleft;
+                        var brickY=r*(brickheight+brickpadding)+brickoffsetleft;
+                        brick[c][r].x=brickX;
+                        brick[c][r].y=brickY;
+                        ctx.rect(brickX,brickY,brickwidth,brickheight);
+                        ctx.fillStyle="#CC3300";
+                        ctx.fill();
+                        ctx.closePath();
+                    }
+                }
+            }
+
+        }
+        function drawBall(){
+            ctx.beginPath();
+            ctx.arc(x,y,ballRadius,0,Math.PI*2);
+            ctx.fillStyle="#0095DD"; ctx.fill();
+            ctx.closePath();
+        }
+        function drawPaddle(){
+            if(rightPressed && paddleX<canvas.width-paddlewidth){
+                paddleX+=7;
+                
+            }
+            if(leftPressed && paddleX>0){
+                paddleX-=7;
+            }
+            ctx.beginPath();
+            ctx.rect(paddleX,canvas.height-paddleheight,paddlewidth,paddleheight);
+            ctx.fillStyle="red";
+            ctx.fill();
+            ctx.closePath();
+        }
+        function keyDownHandler(e){
+            if(e.keyCode==39){
+                rightPressed=true;
+            }
+            if(e.keyCode==37){
+                leftPressed=true;
+            }
+        }
+        function keyUpHandler(e){
+            if(e.keyCode==39){
+                rightPressed=false;
+            }
+            if(e.keyCode==37){
+                leftPressed=false;
+            }
+        }
+        function draw(){
+            ctx.clearRect(0,0,canvas.width,canvas.height);
+            drawBall();
+            drawPaddle();
+            drawBricks();
+            collisionDetection()
+            drawScore()
+            drawLives()
+            
+            if(x+dx<ballRadius||x+dx>canvas.width-ballRadius){
+                dx=-dx;
+            }
+            if(y+dy>canvas.height-ballRadius){
+                if(x>paddleX && x<paddleX+paddlewidth){
+                     dy=-dy;
+                }
+                else{
+                    lives-=1;
+                    if(lives==0){
+                        alert("GAME OVER!!");
+                        clearInterval(Z);
+                    }
+                    else{
+                        x=canvas.width/2;
+                        y=canvas.height-30;
+                        dx=2;
+                        dy=-2;
+                        paddleX=(canvas.width-paddlewidth)/2;
+                    }
+                }
+               
+            }
+            if(y<ballRadius){
+                dy=-dy;
+            }
+            
+            x+=dx;
+            y+=dy;
+        };
+        
+
+    </script>
+</head>
+<body>
+    <h3 id="topic">林尹詳的打磚塊遊戲</h3>
+    <canvas id="myCanvas" width="480" height="320"></canvas>
+    <!--canvas 網頁前端畫圖區-->
+    <script>
+        var canvas=
+        document.getElementById("myCanvas");
+        var ctx=canvas.getContext("2d");
+        var x=canvas.width/2;
+        var y=canvas.height-30;
+        var dx=2;
+        var dy=-2;
+        var ballRadius=10;
+        var paddlewidth=75;
+        var paddleheight=10;
+        var paddleX=(canvas.width-paddlewidth)/2;
+        var rightPressed=false;
+        var leftPressed=false;
+        var brickwidth=75;
+        var brickheight=20;
+        var brickColumnCount=5;
+        var brickpadding=10;
+        var brickoffsetleft=30;
+        var brickRowCount=3;
+        var brickoffsetTop=30;
+        var score=0;
+        var lives=3;
+        var brick=[];
+        for(var c=0;c<brickColumnCount;c++){
+            brick[c]=[];
+            for(var r=0;r<brickRowCount;r++){
+                brick[c][r]={x:0, y:0, status:1};//status預設為1表示都會出現;
+            }
+        }
+        
+
+        document.addEventListener("keydown",keyDownHandler,false);
+        document.addEventListener("keyup",keyUpHandler,false);
+        document.addEventListener("mousemove",mouseMoveHandler,false);
+    </script>
+</body>
+</html>
